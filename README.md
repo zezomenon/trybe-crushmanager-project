@@ -71,7 +71,7 @@ Você vai desenvolver uma API de um CRUD (**C**reate, **R**ead, **U**pdate e **D
 
 ### Data de Entrega
 
-O projeto tem até a seguinte data: `dd/mm/yyyy - 14:00h`. Para ser entregue a avaliação final.
+O projeto tem até a seguinte data: `13/04/2021 - 14:00h`. Para ser entregue a avaliação final.
 
 ---
 
@@ -81,7 +81,7 @@ O projeto tem até a seguinte data: `dd/mm/yyyy - 14:00h`. Para ser entregue a a
 
 1. Clone o repositório
 
-- `git clone https://github.com/betrybe/sd-0x-project-crush-manager.git`.
+- `git clone https://github.com/tryber/sd-07-crush-manager.git`.
 - Entre na pasta do repositório que você acabou de clonar:
   - `cd sd-07-crush-manager`
 
@@ -118,13 +118,13 @@ O projeto tem até a seguinte data: `dd/mm/yyyy - 14:00h`. Para ser entregue a a
 
 6. Crie um novo `Pull Request` _(PR)_
 
-- Vá até a página de _Pull Requests_ do [repositório no GitHub](https://github.com/tryber/sd-0x-project-crush-manager/pulls)
+- Vá até a página de _Pull Requests_ do [repositório no GitHub](https://github.com/tryber/sd-07-crush-manager/pulls)
 - Clique no botão verde _"New pull request"_
 - Clique na caixa de seleção _"Compare"_ e escolha a sua branch **com atenção**
 - Clique no botão verde _"Create pull request"_
 - Adicione uma descrição para o _Pull Request_ e clique no botão verde _"Create pull request"_
 - **Não se preocupe em preencher mais nada por enquanto!**
-- Volte até a [página de _Pull Requests_ do repositório](https://github.com/tryber/sd-0x-project-crush-manager/pulls) e confira que o seu _Pull Request_ está criado
+- Volte até a [página de _Pull Requests_ do repositório](https://github.com/tryber/sd-07-crush-manager/pulls) e confira que o seu _Pull Request_ está criado
 
 ## Durante o desenvolvimento
 
