@@ -319,7 +319,7 @@ Isso está configurado para o avaliador funcionar.
 
     ```js
     {
-      "message": "A \"senha\" ter pelo menos 6 caracteres"
+      "message": "A \"senha\" deve ter pelo menos 6 caracteres"
     }
     ```
 
