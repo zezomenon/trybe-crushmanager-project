@@ -1,16 +1,15 @@
 const express = require('express');
-const fs = require('fs').promises;
-const data = require('../../crush.json');
+const { readFile } = require('fs').promises;
 
-const route = express();
+const router = express.Router();
 
-route.get('/', async (_req, res) => {
+router.get('/', async (_req, res) => {
   try {
-    const response = await JSON.parse(fs.readFile(data));
-    return res.status(200).json(response);
+    const response = JSON.parse(await readFile('./crush.json', 'utf-8'));
+    res.status(200).json(response);
   } catch (error) {
     throw new Error(error);
   }
 });
 
-module.exports = route;
+module.exports = router;
