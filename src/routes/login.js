@@ -25,7 +25,7 @@ const validateEmailAndPassowrd = (req, res, next) => {
 
   if (!email) return res.status(400).json({ message: emailDontExist });
   if (!emailValid(email)) return res.status(400).json({ message: emailInvalidFormat });
-  if (!password) return res.status(400).json({ message: passwordDontExist }); // nao ta passando
+  if (!password) return res.status(400).json({ message: passwordDontExist });
   if (!passwordValid(password)) return res.status(400).json({ message: passwordInvalidSize });
 
   next();
