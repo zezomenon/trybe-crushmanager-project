@@ -1,8 +1,64 @@
 const express = require('express');
-const { readFile } = require('fs').promises;
-// const data = require('../../crush.json');
+const { readFile, writeFile } = require('fs').promises;
+const data = require('../../crush.json');
 
 const router = express.Router();
+
+const hasAuthorization = (req, res, next) => {
+  const { authorization } = req.headers;
+  const tokenSize = 16;
+  const tokenDontExist = 'Token não encontrado';
+  const invalidToken = 'Token inválido';
+  
+  if (!authorization) return res.status(401).json({ message: tokenDontExist });
+  if (authorization.length < tokenSize) return res.status(401).json({ message: invalidToken });
+  
+  next();
+};
+
+const validateNameAndAge = (req, res, next) => {
+  const { name, age } = req.body;
+  const charRules = 3;
+  const minAge = 18;
+  const nameDontExist = 'O campo "name" é obrigatório';
+  const invalidName = 'O "name" deve ter pelo menos 3 caracteres';
+  const ageDontExist = 'O campo "age" é obrigatório';
+  const invalidAge = 'O crush deve ser maior de idade';
+
+  if (!name) return res.status(400).json({ message: nameDontExist });
+  if (name.length < charRules) return res.status(400).json({ message: invalidName });
+  if (!age) return res.status(400).json({ message: ageDontExist });
+  if (age < minAge) res.status(400).json({ message: invalidAge });
+
+  next();
+};
+
+const dateValid = (date) => {
+  const regex = /^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/g;
+  return regex.test(date);
+};
+
+const dateSubfields = (date) => {
+  const { datedAt, rate } = date;
+  if (datedAt && rate) return date;
+};
+
+const validateDateAndRate = (req, res, next) => {
+  const { date: { datedAt, rate } } = req.body;
+  const { date } = req.body; // feito assim por reclamar de complexidade
+
+  const minRate = 1;
+  const maxRate = 5;
+  const invalidDate = 'O campo "datedAt" deve ter o formato "dd/mm/aaaa"';
+  const invalidRate = 'O campo "rate" deve ser um inteiro de 1 à 5';
+  const dateDontExist = 'O campo "date" é obrigatório e "datedAt" e "rate" não podem ser vazios';
+
+  if (!dateSubfields(date)) return res.status(400).json({ message: dateDontExist });
+  if (!dateValid(datedAt)) return res.status(400).json({ message: invalidDate });
+  if (!(rate >= minRate && rate <= maxRate)) return res.status(400).json({ message: invalidRate });
+
+  next();
+};
 
 router.get('/', async (_req, res) => {
   try {
@@ -30,6 +86,27 @@ router.get('/:id', async (req, res) => {
       });
     }
     return res.status(200).json(crushById);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+router.post('/', hasAuthorization, validateNameAndAge, validateDateAndRate, async (req, res) => {
+  const { name, age, date } = req.body;
+  const size = data.length;
+  data[size] = {
+    id: size + 1,
+    name,
+    age,
+    date,
+  };
+
+  try {
+    const response = JSON.stringify(data);
+    await writeFile(`${__dirname}/../../crush.json`, response);
+    res.status(201).json({
+      message: 'Salvo com sucesso!',
+    });
   } catch (error) {
     throw new Error(error);
   }
