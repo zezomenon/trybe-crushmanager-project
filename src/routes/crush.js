@@ -28,23 +28,22 @@ const validateNameAndAge = (req, res, next) => {
   if (!name) return res.status(400).json({ message: nameDontExist });
   if (name.length < charRules) return res.status(400).json({ message: invalidName });
   if (!age) return res.status(400).json({ message: ageDontExist });
-  if (age < minAge) res.status(400).json({ message: invalidAge });
+  if (age < minAge) return res.status(400).json({ message: invalidAge });
 
   next();
 };
+
+const dateSubFields = (date) => 
+  (!date || date.datedAt === undefined || date.rate === undefined);
+// source: referencia ao colega Vanderson Henrique - github
 
 const dateValid = (date) => {
   const regex = /^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/g;
   return regex.test(date);
 };
 
-const dateSubfields = (date) => {
-  const { datedAt, rate } = date;
-  if (datedAt && rate) return date;
-};
-
 const validateDateAndRate = (req, res, next) => {
-  const { date: { datedAt, rate } } = req.body;
+  // const { date: { datedAt, rate } } = req.body;
   const { date } = req.body; // feito assim por reclamar de complexidade
 
   const minRate = 1;
@@ -53,9 +52,11 @@ const validateDateAndRate = (req, res, next) => {
   const invalidRate = 'O campo "rate" deve ser um inteiro de 1 à 5';
   const dateDontExist = 'O campo "date" é obrigatório e "datedAt" e "rate" não podem ser vazios';
 
-  if (!dateSubfields(date)) return res.status(400).json({ message: dateDontExist });
-  if (!dateValid(datedAt)) return res.status(400).json({ message: invalidDate });
-  if (!(rate >= minRate && rate <= maxRate)) return res.status(400).json({ message: invalidRate });
+  if (dateSubFields(date)) return res.status(400).json({ message: dateDontExist });
+  if (!dateValid(date.datedAt)) return res.status(400).json({ message: invalidDate });
+  if (!(date.rate >= minRate && date.rate <= maxRate)) {
+    return res.status(400).json({ message: invalidRate });
+  }
 
   next();
 };
@@ -94,8 +95,9 @@ router.get('/:id', async (req, res) => {
 router.post('/', hasAuthorization, validateNameAndAge, validateDateAndRate, async (req, res) => {
   const { name, age, date } = req.body;
   const size = data.length;
-  data[size] = {
-    id: size + 1,
+  const id = size + 1;
+  const newData = {
+    id,
     name,
     age,
     date,
@@ -104,9 +106,7 @@ router.post('/', hasAuthorization, validateNameAndAge, validateDateAndRate, asyn
   try {
     const response = JSON.stringify(data);
     await writeFile(`${__dirname}/../../crush.json`, response);
-    res.status(201).json({
-      message: 'Salvo com sucesso!',
-    });
+    res.status(201).json(newData);
   } catch (error) {
     throw new Error(error);
   }
