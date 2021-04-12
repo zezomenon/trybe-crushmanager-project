@@ -22,7 +22,7 @@ const validateEmailAndPassowrd = (req, res, next) => {
   const passwordInvalidSize = 'A "senha" deve ter pelo menos 6 caracteres';
 
   const { email, password } = req.body;
-  console.log(passwordValid);
+
   if (!email) return res.status(400).json({ message: emailDontExist });
   if (!emailValid(email)) return res.status(400).json({ message: emailInvalidFormat });
   if (!password) return res.status(400).json({ message: passwordDontExist }); // nao ta passando
@@ -33,7 +33,7 @@ const validateEmailAndPassowrd = (req, res, next) => {
 
 router.post('/', validateEmailAndPassowrd, (_req, res) => {
   const token = randomToken();
-  res.status(201).json({ token });
+  res.status(200).json({ token });
 });
 
 module.exports = router;
