@@ -1,20 +1,9 @@
 const express = require('express');
 const { readFile, writeFile } = require('fs').promises;
 const data = require('../../crush.json');
+const hasAuthorization = require('../middlewares/tokenAuthorization');
 
 const router = express.Router();
-
-const hasAuthorization = (req, res, next) => {
-  const { authorization } = req.headers;
-  const tokenSize = 16;
-  const tokenDontExist = 'Token não encontrado';
-  const invalidToken = 'Token inválido';
-  
-  if (!authorization) return res.status(401).json({ message: tokenDontExist });
-  if (authorization.length < tokenSize) return res.status(401).json({ message: invalidToken });
-  
-  next();
-};
 
 const validateNameAndAge = (req, res, next) => {
   const { name, age } = req.body;
@@ -93,7 +82,8 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', hasAuthorization, validateNameAndAge, validateDateAndRate, async (req, res) => {
   const { name, age, date } = req.body;
-  const size = data.length;
+  const data2 = JSON.parse(await readFile('./crush.json', 'utf-8'));
+  const size = data2.length;
   const id = size + 1;
   const newData = {
     id,
@@ -101,9 +91,9 @@ router.post('/', hasAuthorization, validateNameAndAge, validateDateAndRate, asyn
     age,
     date,
   };
-
+  const newD = [...data2, newData];
   try {
-    const response = JSON.stringify(data);
+    const response = JSON.stringify(newD);
     await writeFile(`${__dirname}/../../crush.json`, response);
     res.status(201).json(newData);
   } catch (error) {

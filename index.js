@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { crush, login } = require('./src/routes');
+const { crush, login, searchCrush } = require('./src/routes');
 
 const app = express();
 app.use(bodyParser.json());
@@ -13,6 +13,7 @@ app.get('/', (_request, response) => {
   response.status(SUCCESS).send();
 });
 
+app.use('/crush/search', searchCrush);
 app.use('/crush', crush);
 app.use('/login', login);
 
