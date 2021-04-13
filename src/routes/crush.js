@@ -5,6 +5,8 @@ const hasAuthorization = require('../middlewares/tokenAuthorization');
 
 const router = express.Router();
 
+const dataCrush = ('./crush.json');
+
 const validateNameAndAge = (req, res, next) => {
   const { name, age } = req.body;
   const charRules = 3;
@@ -52,7 +54,7 @@ const validateDateAndRate = (req, res, next) => {
 router.get('/', async (_req, res) => {
   try {
     const response = JSON.parse(
-      await readFile('./crush.json', 'utf-8'),
+      await readFile(dataCrush, 'utf-8'),
     );
     res.status(200).json(response);
   } catch (error) {
@@ -64,7 +66,7 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const response = JSON.parse(
-      await readFile('./crush.json', 'utf-8'),
+      await readFile(dataCrush, 'utf-8'),
     );
     const crushById = response.find(
       (crush) => crush.id === Number(id),
@@ -82,7 +84,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', hasAuthorization, validateNameAndAge, validateDateAndRate, async (req, res) => {
   const { name, age, date } = req.body;
-  const data2 = JSON.parse(await readFile('./crush.json', 'utf-8'));
+  const data2 = JSON.parse(await readFile(dataCrush, 'utf-8'));
   const size = data2.length;
   const id = size + 1;
   const newData = {
