@@ -132,4 +132,19 @@ router.put('/:id', hasAuthorization, validateNameAndAge, validateDateAndRate, as
   }
 });
 
+router.delete('/:id', hasAuthorization, async (req, res) => {
+  const { id } = req.params;
+  const filterItemToDelete = data.filter((element) => element.id !== Number(id));
+  
+  try {
+    const response = JSON.stringify(filterItemToDelete);
+    await writeFile(`${__dirname}/../../crush.json`, response);
+    res.status(200).json({
+      message: 'Crush deletado com sucesso',
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = router;
