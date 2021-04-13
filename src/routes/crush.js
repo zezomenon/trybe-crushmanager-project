@@ -1,55 +1,15 @@
 const express = require('express');
 const { readFile, writeFile } = require('fs').promises;
 const data = require('../../crush.json');
-const hasAuthorization = require('../middlewares/tokenAuthorization');
+const {
+  hasAuthorization,
+  validateDateAndRate,
+  validateNameAndAge,
+} = require('../middlewares');
 
 const router = express.Router();
 
-const dataCrush = ('./crush.json');
-
-const validateNameAndAge = (req, res, next) => {
-  const { name, age } = req.body;
-  const charRules = 3;
-  const minAge = 18;
-  const nameDontExist = 'O campo "name" é obrigatório';
-  const invalidName = 'O "name" deve ter pelo menos 3 caracteres';
-  const ageDontExist = 'O campo "age" é obrigatório';
-  const invalidAge = 'O crush deve ser maior de idade';
-
-  if (!name) return res.status(400).json({ message: nameDontExist });
-  if (name.length < charRules) return res.status(400).json({ message: invalidName });
-  if (!age) return res.status(400).json({ message: ageDontExist });
-  if (age < minAge) return res.status(400).json({ message: invalidAge });
-
-  next();
-};
-
-const dateSubFields = (date) => 
-  (!date || date.datedAt === undefined || date.rate === undefined);
-// source: referencia ao colega Vanderson Henrique - github
-
-const dateValid = (date) => {
-  const regex = /^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/g;
-  return regex.test(date);
-};
-
-const validateDateAndRate = (req, res, next) => {
-  const { date } = req.body; // feito assim por reclamar de complexidade
-
-  const minRate = 1;
-  const maxRate = 5;
-  const invalidDate = 'O campo "datedAt" deve ter o formato "dd/mm/aaaa"';
-  const invalidRate = 'O campo "rate" deve ser um inteiro de 1 à 5';
-  const dateDontExist = 'O campo "date" é obrigatório e "datedAt" e "rate" não podem ser vazios';
-
-  if (dateSubFields(date)) return res.status(400).json({ message: dateDontExist });
-  if (!dateValid(date.datedAt)) return res.status(400).json({ message: invalidDate });
-  if (!(date.rate >= minRate && date.rate <= maxRate)) {
-    return res.status(400).json({ message: invalidRate });
-  }
-
-  next();
-};
+const dataCrush = ('./crush.json'); // lint
 
 router.get('/', async (_req, res) => {
   try {

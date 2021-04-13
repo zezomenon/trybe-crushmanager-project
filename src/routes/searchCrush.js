@@ -1,7 +1,6 @@
 const express = require('express');
 const { readFile } = require('fs').promises;
-// const data = require('../../crush.json');
-const hasAuthorization = require('../middlewares/tokenAuthorization');
+const { hasAuthorization } = require('../middlewares');
 
 const router = express.Router();
 
