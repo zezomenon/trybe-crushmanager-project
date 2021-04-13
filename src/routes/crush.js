@@ -43,7 +43,6 @@ const dateValid = (date) => {
 };
 
 const validateDateAndRate = (req, res, next) => {
-  // const { date: { datedAt, rate } } = req.body;
   const { date } = req.body; // feito assim por reclamar de complexidade
 
   const minRate = 1;
@@ -107,6 +106,27 @@ router.post('/', hasAuthorization, validateNameAndAge, validateDateAndRate, asyn
     const response = JSON.stringify(data);
     await writeFile(`${__dirname}/../../crush.json`, response);
     res.status(201).json(newData);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+router.put('/:id', hasAuthorization, validateNameAndAge, validateDateAndRate, async (req, res) => {
+  const { id } = req.params;
+  const { name, age, date } = req.body;
+  const filterDataToEdit = data.filter((element) => element.id !== Number(id));
+  const editedData = {
+    id: Number(id),
+    name,
+    age,
+    date,
+  };
+  const newEditedData = [...filterDataToEdit, editedData];
+
+  try {
+    const response = JSON.stringify(newEditedData);
+    await writeFile(`${__dirname}/../../crush.json`, response);
+    res.status(200).json(editedData);
   } catch (error) {
     throw new Error(error);
   }
